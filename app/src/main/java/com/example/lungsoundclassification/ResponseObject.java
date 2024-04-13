@@ -1,5 +1,7 @@
 package com.example.lungsoundclassification;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,5 +42,14 @@ public class ResponseObject implements Serializable {
 
     public void setSeverities(List<Integer> severities) {
         this.severities = severities;
+    }
+
+    @NonNull
+    public String toString() {
+        return "ResponseObject{" +
+                "diseases=" + diseases +
+                ", probabilities=" + probabilities +
+                ", severities=" + severities +
+                '}';
     }
 }

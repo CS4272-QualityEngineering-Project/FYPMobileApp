@@ -10,6 +10,7 @@ public class RetrofitClient {
     private static Retrofit retrofit;
     private static String BASE_URL = "http://10.10.16.8:8080/";
 
+    // TODO: TEST
     public static Retrofit getRetrofitInstance(){
         if (retrofit == null){
 
