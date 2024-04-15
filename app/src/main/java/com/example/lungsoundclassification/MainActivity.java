@@ -152,7 +152,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isFileAccessible(Uri uri, Context _context) {
         try {
             // Open the file using FileInputStream
-            FileInputStream inputStream = new FileInputStream(_context.getContentResolver().openFileDescriptor(uri, "r").getFileDescriptor());
+//            FileInputStream inputStream = new FileInputStream(_context.getContentResolver().openFileDescriptor(uri, "r").getFileDescriptor());
+
+            InputStream inputStream = _context.getContentResolver().openInputStream(uri);
 
             // Check if the file is open and ready for reading
             if (inputStream.available() > 0) {
