@@ -3,7 +3,6 @@ package com.example.lungsoundclassification;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.content.Context;
-import android.os.ParcelFileDescriptor;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,8 +78,43 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testReadDataFromFile() {
-        // TODO: Implement this test
+    public void testReadDataFromFile_GeneralCase() {
+        // Arrange
+        byte[] expectedData = new byte[] {1, 2, 3, 4, 5};
+        InputStream mockInputStream = new ByteArrayInputStream(expectedData);
+
+        try {
+            when(mockContext.getContentResolver()).thenReturn(mockContentResolver);
+            when(mockContentResolver.openInputStream(mockUri)).thenReturn(mockInputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Act
+        byte[] actualData = MainActivity.readDataFromFile(mockUri, mockContext);
+
+        // Assert
+        assertArrayEquals(expectedData, actualData);
+    }
+
+    @Test
+    public void testReadDataFromFile_EmptyFile() {
+        // Arrange
+        byte[] expectedData = new byte[0];
+        InputStream mockInputStream = new ByteArrayInputStream(expectedData);
+
+        try {
+            when(mockContext.getContentResolver()).thenReturn(mockContentResolver);
+            when(mockContentResolver.openInputStream(mockUri)).thenReturn(mockInputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Act
+        byte[] actualData = MainActivity.readDataFromFile(mockUri, mockContext);
+
+        // Assert
+        assertArrayEquals(expectedData, actualData);
     }
 
     @Test
