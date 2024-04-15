@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             // Check if the file is accessible
             if (isFileAccessible(fileUri, this)) {
                 // Read the data from the file
-                byte[] wavData = readDataFromFile(fileUri);
+                byte[] wavData = readDataFromFile(fileUri, this);
                 // Send the data to the server
                 sendWavDataToServer(wavData, fileUri);
             } else {
@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO: TEST
-    private byte[] readDataFromFile(Uri fileUri) {
+    public static byte[] readDataFromFile(Uri fileUri, Context _context) {
         byte[] wavData = null;
 
         try {
             // Create an InputStream from the URI
-            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+            InputStream inputStream = _context.getContentResolver().openInputStream(fileUri);
 
             // Create a ByteArrayOutputStream
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
