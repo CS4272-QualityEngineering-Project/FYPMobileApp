@@ -78,6 +78,28 @@ public class MainActivityTest {
     }
 
     @Test
+    public void testIsFileAccessible_IOException_ReturnsFalse() {
+        // Arrange
+        try {
+            when(mockContext.getContentResolver()).thenReturn(mockContentResolver);
+            when(mockContentResolver.openInputStream(mockUri)).thenReturn(mockInputStream);
+            when(mockInputStream.available()).thenThrow(new IOException());
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("IO Exception");
+            e.printStackTrace();
+        }
+
+        // Act
+        boolean result = MainActivity.isFileAccessible(mockUri, mockContext);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
     public void testReadDataFromFile_GeneralCase() {
         // Arrange
         byte[] expectedData = new byte[] {1, 2, 3, 4, 5};
@@ -115,6 +137,26 @@ public class MainActivityTest {
 
         // Assert
         assertArrayEquals(expectedData, actualData);
+    }
+
+    @Test
+    public void testReadDataFromFile_IOException_ReturnsNull() {
+        // Arrange
+        try {
+            when(mockContext.getContentResolver()).thenReturn(mockContentResolver);
+            when(mockContentResolver.openInputStream(mockUri)).thenReturn(mockInputStream);
+            when(mockInputStream.read(any())).thenThrow(new IOException());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Act
+        byte[] actualData = MainActivity.readDataFromFile(mockUri, mockContext);
+
+        // Assert
+        assertNull(actualData);
     }
 
     @Test
