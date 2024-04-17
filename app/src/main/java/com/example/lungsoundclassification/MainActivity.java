@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
             if (isFileAccessible(fileUri, this)) {
                 // Read the data from the file
                 byte[] wavData = readDataFromFile(fileUri, this);
+                if (wavData == null) {
+                    Toast.makeText(MainActivity.this, "Error reading file", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 // Send the data to the server
                 sendWavDataToServer(wavData, fileUri);
             } else {
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             byteArrayOutputStream.close();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return wavData;
     }
