@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // TODO: TEST - DONE (UI test)
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("audio/x-wav");
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // TODO: TEST
+    // TODO: TEST - SEEMS DIFFICULT
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -70,15 +71,17 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Error reading file", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //  Create a RequestBody from the data
+                RequestBody requestFile = createRequestBody(wavData, fileUri, this);
                 // Send the data to the server
-                sendWavDataToServer(wavData, fileUri);
+                sendWavDataToServer(requestFile);
             } else {
                 Toast.makeText(MainActivity.this, "File is not accessible", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    // TODO: TEST
+    // TODO: TEST - DONE
     public static byte[] readDataFromFile(Uri fileUri, Context _context) {
         byte[] wavData = null;
 
@@ -113,10 +116,20 @@ public class MainActivity extends AppCompatActivity {
         return wavData;
     }
 
-    // TODO: TEST
-    private void sendWavDataToServer(byte[] wavData, Uri fileUri) {
-        //
-        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentResolver().getType(fileUri)), wavData);
+    // TODO: TEST - DONE
+    protected static   RequestBody createRequestBody(byte[] wavData, Uri fileUri, Context _context) {
+        if (wavData == null) {
+            return null;
+        }
+        String mimeType = _context.getContentResolver().getType(fileUri);
+        if (mimeType == null) {
+            return  null;
+        }
+        return RequestBody.create(MediaType.parse(mimeType), wavData);
+    }
+
+    // TODO: TEST - DONE (WITHOUT ASYNC)
+    protected void sendWavDataToServer(RequestBody requestFile) {
         RetrofitAPICall apiService = RetrofitClient.getRetrofitInstance().create(RetrofitAPICall.class);
         Call<ResponseObject> call = apiService.sendWav(requestFile);
         showProgressBar();
@@ -125,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseObject>() {
             @Override
             public void onResponse(Call<ResponseObject> call, retrofit2.Response<ResponseObject> response) {
-                handleResponse(response);
+                RetrofitResponseWrapper responseWrapper = new RetrofitResponseWrapper(response.isSuccessful(), response.body());
+                handleResponse(responseWrapper);
             }
 
             @Override
@@ -137,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO: TEST
-    private void handleResponse(retrofit2.Response<ResponseObject> response) {
+    protected void handleResponse(RetrofitResponseWrapper response) {
         if(response.isSuccessful()){
             hideProgressBar();
             Toast.makeText(MainActivity.this, "Request successful", Toast.LENGTH_SHORT).show();
@@ -152,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: TEST
+    // TODO: TEST - DONE
     public static boolean isFileAccessible(Uri uri, Context _context) {
         try {
             // Open the file using FileInputStream
