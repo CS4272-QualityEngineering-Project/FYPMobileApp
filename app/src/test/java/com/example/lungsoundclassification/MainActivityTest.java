@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.RequestBody;
+
 @RunWith(MockitoJUnitRunner.class)
 public class MainActivityTest {
 
@@ -102,7 +104,7 @@ public class MainActivityTest {
     @Test
     public void testReadDataFromFile_GeneralCase() {
         // Arrange
-        byte[] expectedData = new byte[] {1, 2, 3, 4, 5};
+        byte[] expectedData = new byte[]{1, 2, 3, 4, 5};
         InputStream mockInputStream = new ByteArrayInputStream(expectedData);
 
         try {
@@ -167,5 +169,57 @@ public class MainActivityTest {
     @Test
     public void testHandleResponse() {
         // TODO: Implement this test
+    }
+
+    @Test
+    public void testCreateRequestBody()  {
+        // Arrange
+        byte[] wavData = new byte[]{1,2,3,4,5};
+        try {
+            when(mockContext.getContentResolver()).thenReturn(mockContentResolver);
+            when(mockContentResolver.getType(mockUri)).thenReturn("audio/x-wav");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Act
+        RequestBody requestBody = MainActivity.createRequestBody(wavData, mockUri, mockContext);
+
+        //Assert
+        try {
+        assertEquals(wavData.length, requestBody.contentLength());
+        assertEquals("audio/x-wav", requestBody.contentType().toString());
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void  testCreateRequestBody_notAudioType()  {
+        // Arrange
+        byte[] wavData = new byte[]{1,2,3,4,5};
+        try {
+            when(mockContext.getContentResolver()).thenReturn(mockContentResolver);
+            when(mockContentResolver.getType(mockUri)).thenReturn(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Act
+        RequestBody requestBody = MainActivity.createRequestBody(wavData, mockUri, mockContext);
+
+        //Assert
+        assertNull(requestBody);
+    }
+
+    @Test
+    public void  testCreateRequestBody_notAudioData()  {
+        // Arrange
+
+        // Act
+        RequestBody requestBody = MainActivity.createRequestBody(null, mockUri, mockContext);
+
+        //Assert
+        assertNull(requestBody);
     }
 }
