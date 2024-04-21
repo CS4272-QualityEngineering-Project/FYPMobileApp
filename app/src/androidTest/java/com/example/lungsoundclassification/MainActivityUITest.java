@@ -44,6 +44,13 @@ public class MainActivityUITest {
         release();
     }
 
+
+    @Test
+    public void testInitialUIState() {
+        // Check that the upload button is displayed
+        onView(withId(R.id.up_upload_audio_btn)).check(matches(isDisplayed()));
+    }
+
     @Test
     public void testOpenFilePicker() {
         // Open the file picker
