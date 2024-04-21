@@ -162,16 +162,6 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testSendWavDataToServer() {
-        // TODO: Implement this test
-    }
-
-    @Test
-    public void testHandleResponse() {
-        // TODO: Implement this test
-    }
-
-    @Test
     public void testCreateRequestBody()  {
         // Arrange
         byte[] wavData = new byte[]{1,2,3,4,5};
