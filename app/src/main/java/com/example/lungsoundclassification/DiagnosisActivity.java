@@ -152,14 +152,19 @@ public class DiagnosisActivity extends AppCompatActivity {
 
     // Replace this method with your actual data source logic
     // TODO: TEST
-    private List<DiagnosisModel> getDiagnosisData(List<String> diagnosisNames, List<Float> diagnosisProbs) {
-        this.diagnosisList = new ArrayList<>();
-        this.diagnosisList.add(new DiagnosisModel(diagnosisNames.get(0), String.format("%.2f%%", diagnosisProbs.get(0) * 100)));
-        this.diagnosisList.add(new DiagnosisModel(diagnosisNames.get(1), String.format("%.2f%%", diagnosisProbs.get(1) * 100)));
-        this.diagnosisList.add(new DiagnosisModel(diagnosisNames.get(2), String.format("%.2f%%", diagnosisProbs.get(2) * 100)));
+    protected List<DiagnosisModel> getDiagnosisData(List<String> diagnosisNames, List<Float> diagnosisProbs) {
+        List<DiagnosisModel> newDiagnosisList = new ArrayList<>();
+        for (int i = 0; i < diagnosisNames.size(); i++) {
+            System.out.println(diagnosisNames.get(i) + " " + diagnosisProbs.get(i));
+            newDiagnosisList.add(new DiagnosisModel(diagnosisNames.get(i), String.format("%.2f%%", diagnosisProbs.get(i) * 100)));
+        }
 
-        viewableDiagnosisList = new ArrayList<>();
-        viewableDiagnosisList.add(diagnosisList.get(0));
+        setDiagnosisList(newDiagnosisList);
+
+        List<DiagnosisModel> newViewableDiagnosisList = new ArrayList<>();
+        newViewableDiagnosisList.add(diagnosisList.get(0));
+
+        setViewableDiagnosisList(newViewableDiagnosisList);
 
         return viewableDiagnosisList;
     }
@@ -180,6 +185,14 @@ public class DiagnosisActivity extends AppCompatActivity {
             viewableDiagnosisList.remove(i);
             adapter.notifyItemRemoved(i);
         }
+    }
+
+    public void setDiagnosisList(List<DiagnosisModel> diagnosisList) {
+        this.diagnosisList = diagnosisList;
+    }
+
+    public void setViewableDiagnosisList(List<DiagnosisModel> viewableDiagnosisList) {
+        this.viewableDiagnosisList = viewableDiagnosisList;
     }
 
 }
